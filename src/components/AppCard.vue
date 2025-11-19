@@ -20,9 +20,9 @@ defineProps({
       class="absolute top-8 left-8"
       @click="onClickFavorite"
     />
-
-    <img class="w-35 h-40" :src="imageUrl" alt="iphone 17 pro max orange" />
-
+    <div class="flex justify-center">
+    <img class="w-35 h-40" :src="imageUrl" alt="iphone" />
+    </div>
     <p class="mt-2 line-clamp-2">{{ title }}</p>
 
     <div class="flex justify-between mt-5">
