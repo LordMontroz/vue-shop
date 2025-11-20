@@ -17,7 +17,6 @@ const onClickFavorite = () => {
 }
 
 const onClickAdd = () => {
-  console.log('🟦 ProductCard.vue: CLICK add/remove id=', item.id)
   emit('toggle-cart', item)
 }
 </script>
