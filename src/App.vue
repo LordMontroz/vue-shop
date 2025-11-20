@@ -8,6 +8,8 @@ import AppHeader from './components/Header/Header.vue'
 import CardList from './components/Card/CardList.vue'
 import Drawer from './components/Cart/Drawer.vue'
 
+//и еще такой момент, когда мы нажимаем оформить заказ, корзина еще открытая
+
 /**
  * Список товаров, загружаемых с API.
  * Каждый товар имеет базовые поля из источника данных,
@@ -40,6 +42,24 @@ const items = ref([])
 
 //это у нас массив cart в нем у нас будет храниться список наших товаров в корзине
 const cart = ref([])
+
+// Восстанавливаем корзину из localStorage при загрузке
+const savedCart = localStorage.getItem('cart')
+if (savedCart) {
+  try {
+    cart.value = JSON.parse(savedCart)
+  } catch (e) {
+    console.log('Ошибка загрузки корзины:', e)
+  }
+}
+
+watch(
+  cart,
+  (newCart) => {
+    localStorage.setItem('cart', JSON.stringify(newCart))
+  },
+  { deep: true },
+)
 
 const isCreatingOrder = ref(false)
 
@@ -273,6 +293,12 @@ const fetchItems = async () => {
       isAdded: false,
     }))
 
+    // 👉 ВОССТАНАВЛИВАЕМ isAdded ДЛЯ ТОВАРОВ, КОТОРЫЕ В КОРЗИНЕ
+    items.value = items.value.map((item) => ({
+      ...item,
+      isAdded: cart.value.some((cartItem) => cartItem.id === item.id),
+    }))
+
     await fetchFavorites()
   } catch (e) {
     console.log(e)
@@ -308,13 +334,6 @@ onMounted(async () => {
  */
 watch(() => [filters.brand, filters.searchQuery], fetchItems)
 
-// watch(cart, () => {
-//   items.value = items.value.map((item) => ({
-//     ...item,
-//     isAdded: false,
-//   }))
-// })
-
 provide('cart', { cart, closeDrawer, openDrawer, toggleCart })
 </script>
 
@@ -328,7 +347,7 @@ provide('cart', { cart, closeDrawer, openDrawer, toggleCart })
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
     <app-header :total-price="totalPrice" @open-drawer="openDrawer" />
     <div class="p-10">
-      <div class="flex items-center">
+      <div class="flex justify-between items-center">
         <h2 class="text-3xl font-bold mb-8">Смартфоны</h2>
 
         <div class="flex gap-4">
