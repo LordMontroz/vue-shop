@@ -1,12 +1,31 @@
 <script setup>
 import AppCard from './AppCard.vue'
 
-defineProps({
+/**
+ * Компонент списка карточек товаров.
+ *
+ * @prop {Array} items — товары для отображения
+ * @prop {boolean} isFavorites — режим страницы избранного
+ *
+ * @event addToFavorite — вызывается при клике на сердечко
+ */
+const { items, isFavorites } = defineProps({
   items: Array,
+  isFavorites: Boolean,
 })
 
-const onClickAdd = () => {
-  alert(111)
+/**
+ * Событие для передачи действия "избранное" наверх.
+ */
+const emit = defineEmits(['addToFavorite'])
+
+/**
+ * Обработка клика по сердечку.
+ */
+const handleFavorite = (item) => {
+  if (!isFavorites) {
+    emit('addToFavorite', item)
+  }
 }
 </script>
 
@@ -15,10 +34,8 @@ const onClickAdd = () => {
     <app-card
       v-for="item in items"
       :key="item.id"
-      :title="item.title"
-      :image-url="item.imageUrl"
-      :price="item.price"
-      :onClickAdd="onClickAdd"
+      :item="item"
+      @favorite="() => handleFavorite(item)"
     />
   </div>
 </template>
