@@ -1,5 +1,7 @@
 <script setup>
-
+defineProps({
+  totalPrice: Number
+})
 const emit = defineEmits(['openDrawer']);
 </script>
 

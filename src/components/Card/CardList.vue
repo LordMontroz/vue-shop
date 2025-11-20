@@ -17,7 +17,7 @@ const { items, isFavorites } = defineProps({
 /**
  * Событие для передачи действия "избранное" наверх.
  */
-const emit = defineEmits(['addToFavorite'])
+const emit = defineEmits(['addToFavorite', 'toggle-cart'])
 
 /**
  * Обработка клика по сердечку.
@@ -26,6 +26,14 @@ const handleFavorite = (item) => {
   if (!isFavorites) {
     emit('addToFavorite', item)
   }
+}
+
+/**
+ * Обработка клика добавления в корзину.
+ */
+const handleToggleCart = (item) => {
+  console.log('🟨 CardList.vue: EVENT toggle-cart id=', item.id)
+  emit('toggle-cart', item)
 }
 </script>
 
@@ -36,6 +44,7 @@ const handleFavorite = (item) => {
       :key="item.id"
       :item="item"
       @favorite="() => handleFavorite(item)"
+      @toggle-cart="() => handleToggleCart(item)"
     />
   </div>
 </template>

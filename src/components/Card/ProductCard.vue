@@ -10,10 +10,15 @@ const { item } = defineProps({
   },
 })
 
-const emit = defineEmits(['favorite'])
+const emit = defineEmits(['favorite', 'toggle-cart'])
 
 const onClickFavorite = () => {
   emit('favorite', item)
+}
+
+const onClickAdd = () => {
+  console.log('🟦 ProductCard.vue: CLICK add/remove id=', item.id)
+  emit('toggle-cart', item)
 }
 </script>
 
@@ -40,7 +45,11 @@ const onClickFavorite = () => {
         <b>{{ item.price }} руб.</b>
       </div>
 
-      <img :src="!item.isAdded ? '/plus.svg' : '/checked.svg'" alt="Добавить" />
+      <img
+        :src="!item.isAdded ? '/plus.svg' : '/checked.svg'"
+        alt="Добавить"
+        @click.stop="onClickAdd"
+      />
     </div>
   </div>
 </template>

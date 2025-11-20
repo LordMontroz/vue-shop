@@ -1,9 +1,21 @@
 <script setup>
+import { inject } from 'vue'
 import CartItem from './CartItem.vue'
+
+const { cart, toggleCart } = inject('cart')
+
+const onClickRemove = (item) => {
+  toggleCart(item)
+}
 </script>
 
 <template>
   <div class="flex flex-col flex-1 gap-5">
-    <cart-item />
+    <cart-item
+      v-for="item in cart"
+      :key="item.id"
+      :item="item"
+      @toggle-cart="() => onClickRemove(item)"
+    />
   </div>
 </template>

@@ -38,6 +38,9 @@ import Drawer from './components/Cart/Drawer.vue'
  */
 const items = ref([])
 
+//это у нас массив cart в нем у нас будет храниться список наших товаров в корзине
+const cart = ref([])
+
 //флаг который указывает что Drawer будет открыт
 const drawerOpen = ref(false)
 
@@ -79,6 +82,32 @@ const filters = reactive({
   brand: '',
   searchQuery: '',
 })
+
+/**
+ * Добавляет или удаляет товар из корзины.
+ *
+ * @param {Object} item — товар, который нужно добавить или убрать
+ *
+ * Логика:
+ * - Если товара нет в корзине → добавить.
+ * - Если товар уже есть → удалить.
+ *
+ * Уникальность определяется по item.id.
+ */
+const toggleCart = (item) => {
+  const index = cart.value.findIndex((cartItem) => cartItem.id === item.id)
+  console.log('🟥 App.vue: toggleCart id=', item.id)
+
+  if (index === -1) {
+    console.log('🟥 App.vue: adding item to cart')
+    cart.value.push(item) // кладём ТОТ ЖЕ объект
+    item.isAdded = true
+  } else {
+    console.log('🟥 App.vue: removing item from cart')
+    cart.value.splice(index, 1)
+    item.isAdded = false
+  }
+}
 
 /**
  * Загружает список избранных товаров с API и обновляет состояние items,
@@ -243,14 +272,13 @@ onMounted(async () => {
  */
 watch(() => [filters.brand, filters.searchQuery], fetchItems)
 
-//provide делаем чтоб перекинуть пропсы с помощью inject в последствии
-provide('cartActions', { closeDrawer, openDrawer })
+provide('cart', { cart, closeDrawer, openDrawer, toggleCart })
 </script>
 
 <template>
   <drawer v-if="drawerOpen" />
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
-    <app-header @open-drawer="openDrawer" />
+    <app-header :total-price="1500" :@open-drawer="openDrawer" />
     <div class="p-10">
       <div class="flex justify-between items-center">
         <h2 class="text-3xl font-bold mb-8">Смартфоны</h2>
@@ -275,7 +303,7 @@ provide('cartActions', { closeDrawer, openDrawer })
         </div>
       </div>
       <div class="mt-10">
-        <card-list :items="items" @add-to-favorite="addToFavorite" />
+        <card-list :items="items" @add-to-favorite="addToFavorite" @toggle-cart="toggleCart" />
       </div>
     </div>
   </div>
