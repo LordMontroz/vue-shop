@@ -1,6 +1,13 @@
 <script setup>
 import DrawerHead from './DrawerHeader.vue'
 import CartListItem from './CartList.vue'
+
+const emit = defineEmits(['createOrder'])
+
+defineProps({
+  totalPrice: Number,
+  buttonDisabled: Boolean,
+})
 </script>
 
 <template>
@@ -13,7 +20,7 @@ import CartListItem from './CartList.vue'
       <div class="flex gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>12990 руб.</b>
+        <b>{{ totalPrice }} руб.</b>
       </div>
 
       <div class="flex gap-2">
@@ -22,8 +29,9 @@ import CartListItem from './CartList.vue'
         <b>0 руб.</b>
       </div>
       <button
-        disabled
-        class="mt-4 transition bg-lime-500 w-full rounded-xl py-3 text-white disabled:bg-slate-300 hower:bg-lime-600 active:bg-lime-700 cursor-pointer"
+        :disabled="buttonDisabled"
+        @click="emit('createOrder')"
+        class="mt-4 transition bg-lime-500 w-full rounded-xl py-3 text-white disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-lime-600 active:bg-lime-700"
       >
         Оформить заказ
       </button>

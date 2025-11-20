@@ -2,7 +2,7 @@
 * Здесь находится основная бизнес-логика проекта. */
 
 <script setup>
-import { onMounted, provide, reactive, ref, watch } from 'vue'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import axios from 'axios'
 import AppHeader from './components/Header/Header.vue'
 import CardList from './components/Card/CardList.vue'
@@ -40,6 +40,15 @@ const items = ref([])
 
 //это у нас массив cart в нем у нас будет храниться список наших товаров в корзине
 const cart = ref([])
+
+const isCreatingOrder = ref(false)
+
+//спосить про это
+const totalPrice = computed(() => cart.value.reduce((acc, item) => acc + item.price, 0))
+
+const cartIsEmpty = computed(() => cart.value.length === 0)
+
+const cartButtonDisabled = computed(() => isCreatingOrder.value || cartIsEmpty.value)
 
 //флаг который указывает что Drawer будет открыт
 const drawerOpen = ref(false)
@@ -106,6 +115,33 @@ const toggleCart = (item) => {
     console.log('🟥 App.vue: removing item from cart')
     cart.value.splice(index, 1)
     item.isAdded = false
+  }
+}
+
+const createOrder = async () => {
+  try {
+    isCreatingOrder.value = true
+    const payload = {
+      items: JSON.parse(JSON.stringify(cart.value)),
+      totalPrice: totalPrice.value,
+    }
+
+    const { data } = await axios.post('https://f9b85f72bbd82117.mokky.dev/orders', payload)
+
+    // очищаем корзину
+    cart.value = []
+
+    // сбрасываем статус isAdded у всех товаров
+    items.value = items.value.map((item) => ({
+      ...item,
+      isAdded: false,
+    }))
+
+    return data
+  } catch (error) {
+    console.log('ORDER ERROR:', error)
+  } finally {
+    isCreatingOrder.value = false
   }
 }
 
@@ -272,15 +308,27 @@ onMounted(async () => {
  */
 watch(() => [filters.brand, filters.searchQuery], fetchItems)
 
+// watch(cart, () => {
+//   items.value = items.value.map((item) => ({
+//     ...item,
+//     isAdded: false,
+//   }))
+// })
+
 provide('cart', { cart, closeDrawer, openDrawer, toggleCart })
 </script>
 
 <template>
-  <drawer v-if="drawerOpen" />
+  <drawer
+    v-if="drawerOpen"
+    :total-price="totalPrice"
+    @create-order="createOrder"
+    :button-disabled="cartButtonDisabled"
+  />
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
-    <app-header :total-price="1500" :@open-drawer="openDrawer" />
+    <app-header :total-price="totalPrice" @open-drawer="openDrawer" />
     <div class="p-10">
-      <div class="flex justify-between items-center">
+      <div class="flex items-center">
         <h2 class="text-3xl font-bold mb-8">Смартфоны</h2>
 
         <div class="flex gap-4">
