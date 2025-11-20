@@ -1,13 +1,13 @@
 <script setup>
-import AppDrawerHead from './AppDrawerHead.vue'
-import AppCartListItem from './AppCartListItem.vue'
+import DrawerHead from './DrawerHeader.vue'
+import CartListItem from './CartList.vue'
 </script>
 
 <template>
   <div class="fixed top-0 left-0 h-full w-full bg-black z-10 opacity-70"></div>
   <div class="bg-white w-96 h-full fixed right-0 top-0 z-20 p-8">
-    <app-drawer-head />
-    <app-cart-list-item />
+    <drawer-head />
+    <cart-list-item />
 
     <div class="flex flex-col gap-4 mt-7">
       <div class="flex gap-2">

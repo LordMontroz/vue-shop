@@ -1,15 +1,12 @@
-/**
- * Корневой компонент приложения.
- * Отвечает за загрузку товаров, фильтрацию, поиск и избранное.
- * Здесь находится основная бизнес-логика проекта.
- */
+/** * Корневой компонент приложения. * Отвечает за загрузку товаров, фильтрацию, поиск и избранное.
+* Здесь находится основная бизнес-логика проекта. */
 
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, provide, reactive, ref, watch } from 'vue'
 import axios from 'axios'
-import AppHeader from './components/AppHeader.vue'
-import AppCardList from './components/AppCardList.vue'
-// import AppDrawer from './components/AppDrawer.vue'
+import AppHeader from './components/Header/Header.vue'
+import CardList from './components/Card/CardList.vue'
+import Drawer from './components/Cart/Drawer.vue'
 
 /**
  * Список товаров, загружаемых с API.
@@ -40,6 +37,19 @@ import AppCardList from './components/AppCardList.vue'
  * }>>}
  */
 const items = ref([])
+
+//флаг который указывает что Drawer будет открыт
+const drawerOpen = ref(false)
+
+//функция closeDrawer мы прокидываем в AppDrawer , а потом в AppDrawerHead чтоб закрывать корзину (а тут injectом закрываем)
+const closeDrawer = () => {
+  drawerOpen.value = false
+}
+
+//функция open мы ее открываем emit
+const openDrawer = () => {
+  drawerOpen.value = true
+}
 
 /**
  * Реактивные фильтры для списка товаров.
@@ -232,12 +242,15 @@ onMounted(async () => {
  * любого из указанных значений.
  */
 watch(() => [filters.brand, filters.searchQuery], fetchItems)
+
+//provide делаем чтоб перекинуть пропсы с помощью inject в последствии
+provide('cartActions', { closeDrawer, openDrawer })
 </script>
 
 <template>
-  <!-- <app-drawer /> -->
+  <drawer v-if="drawerOpen" />
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
-    <app-header />
+    <app-header @open-drawer="openDrawer" />
     <div class="p-10">
       <div class="flex justify-between items-center">
         <h2 class="text-3xl font-bold mb-8">Смартфоны</h2>
@@ -262,7 +275,7 @@ watch(() => [filters.brand, filters.searchQuery], fetchItems)
         </div>
       </div>
       <div class="mt-10">
-        <app-card-list :items="items" @addToFavorite="addToFavorite" />
+        <card-list :items="items" @add-to-favorite="addToFavorite" />
       </div>
     </div>
   </div>

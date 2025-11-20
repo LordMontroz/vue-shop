@@ -1,5 +1,5 @@
 <script setup>
-import AppCard from './AppCard.vue'
+import Card from './ProductCard.vue'
 
 /**
  * Компонент списка карточек товаров.
@@ -31,7 +31,7 @@ const handleFavorite = (item) => {
 
 <template>
   <div class="grid grid-cols-4 gap-5">
-    <app-card
+    <card
       v-for="item in items"
       :key="item.id"
       :item="item"
