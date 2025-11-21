@@ -1,7 +1,6 @@
 <script setup>
 import { computed, provide, ref, watch } from 'vue'
-import AppHeader from './components/Header/Header.vue'
-import Drawer from './components/Cart/Drawer.vue'
+import { AppHeader, Drawer } from '/@components'
 
 /* ---------------- API ---------------- */
 const API = 'https://f9b85f72bbd82117.mokky.dev'

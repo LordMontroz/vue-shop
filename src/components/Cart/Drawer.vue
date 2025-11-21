@@ -1,7 +1,5 @@
 <script setup>
-import DrawerHead from './DrawerHeader.vue'
-import CartListItem from './CartItems.vue'
-import InfoBlock from './InfoBlock.vue'
+import { DrawerHead, cartListItem, infoBlock } from '@/components'
 
 const emit = defineEmits(['createOrder'])
 
