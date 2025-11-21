@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, inject, onUnmounted } from 'vue'
 import axios from 'axios'
-import CardList from '@/components/Card/CardList.vue'
+import CardList from '@/components/card/ProductList.vue'
 
 const API = 'https://f9b85f72bbd82117.mokky.dev'
 

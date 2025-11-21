@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from 'vue'
-import CartItem from './CartItem.vue'
+import CartItem from '@/components'
 
 const { cart, toggleCart } = inject('cart')
 

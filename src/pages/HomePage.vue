@@ -1,6 +1,6 @@
 <script setup>
 import { inject, reactive, watch, ref, onMounted, onUnmounted } from 'vue'
-import CardList from '../components/Card/CardList.vue'
+import CardList from '../components/card/ProductList.vue'
 import axios from 'axios'
 import debounce from 'lodash.debounce'
 

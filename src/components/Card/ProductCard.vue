@@ -1,8 +1,4 @@
 <script setup>
-/**
- * Компонент карточки товара.
- * Принимает один объект item и эмитит событие "favorite".
- */
 const { item } = defineProps({
   item: {
     type: Object,
